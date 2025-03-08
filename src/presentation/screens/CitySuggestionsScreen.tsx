@@ -5,7 +5,7 @@ import {
   useFocusEffect,
 } from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {colors} from '../../constants/colors';
@@ -31,12 +31,13 @@ const CitySuggestionsScreen = () => {
   const route = useRoute<CitySuggestionsScreenRouteProp>();
   const navigation = useNavigation<CitySuggestionsScreenNavigationProp>();
   const {query} = route.params;
+
   const [suggestions, setSuggestions] = useState<SearchHistory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       navigation.setOptions({
         headerTintColor: colors.darkGray,
       });
@@ -46,15 +47,15 @@ const CitySuggestionsScreen = () => {
   const fetchSuggestions = async () => {
     try {
       setLoading(true);
-      const suggestions = await GetCitySuggestionsUseCase(query);
-      setSuggestions(suggestions);
+      const suggestionsCities = await GetCitySuggestionsUseCase(query);
+      setSuggestions(suggestionsCities);
       setLoading(false);
 
       if (suggestions.length === 1) {
         navigation.navigate('Details', suggestions[0]);
       }
-    } catch (error: any) {
-      setError(error.message);
+    } catch (err: any) {
+      setError(err.message);
       setLoading(false);
     }
   };
@@ -113,11 +114,11 @@ const CitySuggestionsScreen = () => {
       <FlatList
         data={suggestions}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContainer}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item}) => (
           <ListItem item={item} onPress={() => handleSuggestionPress(item)} />
         )}
-        ItemSeparatorComponent={() => <View style={{height: 8}} />}
       />
     </View>
   );
@@ -139,6 +140,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 20,
   },
+  listContainer: {gap: 8},
 });
 
 export default CitySuggestionsScreen;

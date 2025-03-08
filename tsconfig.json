@@ -1,4 +1,3 @@
 {
   "extends": "@react-native/typescript-config/tsconfig.json",
-  "react-hooks/exhaustive-deps": "off"
 }
