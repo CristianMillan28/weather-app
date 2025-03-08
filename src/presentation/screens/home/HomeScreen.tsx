@@ -73,40 +73,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: colors.primary,
   },
-  // Eliminar estilos no utilizados
-  // clearButton: {
-  //   marginRight: 8,
-  // },
-  // searchButton: {
-  //   backgroundColor: colors.primary,
-  //   padding: 8,
-  //   borderRadius: 100,
-  // },
-  // clearHistoryContainer: {
-  //   flexDirection: 'row',
-  //   alignItems: 'center',
-  //   marginBottom: 16,
-  //   marginTop: 16,
-  // },
-  // clearHistoryText: {
-  //   color: colors.darkGray,
-  //   marginLeft: 8,
-  // },
-  // emptyHistoryContainer: {
-  //   marginTop: 64,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   gap: 32,
-  // },
-  // emptyHistoryText: {
-  //   fontSize: 16,
-  //   color: colors.gray,
-  // },
-  // weatherIcon: {
-  //   width: 160,
-  //   height: 160,
-  //   objectFit: 'contain',
-  // },
 });
 
 export default HomeScreen;

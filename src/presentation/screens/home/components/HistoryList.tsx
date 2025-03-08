@@ -1,11 +1,11 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {colors} from '../../../../constants/colors';
-import {SearchHistory} from '../../../../data/models/SearchHistory';
+import { colors } from '../../../../constants/colors';
+import { SearchHistory } from '../../../../data/models/SearchHistory';
+import { useSearchHistoryStore } from '../../../../domain/store/useSearchHistoryStore';
 import ListItem from '../../../components/ListItem';
-import {useSearchHistoryStore} from '../../../../domain/store/useSearchHistoryStore';
-import {useNavigation} from '@react-navigation/native';
 
 interface HistoryListProps {}
 
@@ -35,8 +35,8 @@ const HistoryList: React.FC<HistoryListProps> = ({}) => {
       </TouchableOpacity>
       <FlatList
         data={history}
-        contentContainerStyle={{paddingBottom: 32}}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContainer}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item}) => (
           <ListItem
@@ -46,7 +46,6 @@ const HistoryList: React.FC<HistoryListProps> = ({}) => {
             onRemove={() => handleRemoveHistoryItem(item.id)}
           />
         )}
-        ItemSeparatorComponent={() => <View style={{height: 8}} />}
       />
     </>
   );
@@ -63,6 +62,7 @@ const styles = StyleSheet.create({
     color: colors.darkGray,
     marginLeft: 8,
   },
+  listContainer: {gap: 8},
 });
 
 export default HistoryList;
