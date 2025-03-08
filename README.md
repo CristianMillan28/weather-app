@@ -60,11 +60,14 @@ Esta es una aplicación de clima desarrollada en React Native que permite al usu
 
 ## Estructura del Proyecto
 
-- `src/data/repositories`: Contiene los repositorios para la obtención de datos.
-- `src/data/models`: Contiene los modelos de datos utilizados en la aplicación.
-- `src/domain/store`: Contiene los stores para el manejo del estado de la aplicación.
-- `src/domain/usecases`: Contiene los casos de uso de la aplicación.
-- `src/domain/services`: Contiene los servicios de la aplicación.
+
+- `src/data`: Contiene la capa de datos de la aplicación
+  - `repositories`: Contiene los repositorios para la obtención de datos.
+  - `models`: Contiene los modelos de datos utilizados en la aplicación.
+- `src/domain`: Contiene la capa de dominio de la aplicación
+  - `store`: Contiene los stores para el manejo del estado de la aplicación.
+  - `usecases`: Contiene los casos de uso de la aplicación.
+  - `services`: Contiene los servicios de la aplicación.
 - `src/presentation/screens`: Contiene las pantallas de la aplicación.
   - `home`: Pantalla principal con el campo de búsqueda y el historial de búsquedas.
   - `city-suggestions`: Pantalla de sugerencias de ciudades.
