@@ -168,6 +168,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     textAlign: 'center',
     marginBottom: 8,
+    marginTop: 16,
   },
   subtitleContainer: {
     flexDirection: 'row',

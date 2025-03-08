@@ -13,8 +13,8 @@ Esta es una aplicación de clima desarrollada en React Native que permite al usu
 
 1. Clona el repositorio:
    ```bash
-   git clone https://github.com/tu-usuario/WeatherApp.git
-   cd WeatherApp
+   git clone https://github.com/CristianMillan28/weather-app
+   cd weather-app
    ```
 
 2. Instala las dependencias:

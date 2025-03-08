@@ -1,19 +1,14 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SearchHistory} from '../models/SearchHistory';
-
-const API_KEY = 'f5aa75166cb215562d20e8036891b40a';
-const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
-const GEO_BASE_URL = 'https://api.openweathermap.org/geo/1.0/direct';
+import {env} from '../../config/environments';
 
 let searchHistory: SearchHistory[] = [];
 
 export const saveSearchHistory = async (history: SearchHistory[]) => {
   try {
     await AsyncStorage.setItem('searchHistory', JSON.stringify(history));
-  } catch (error) {
-    console.error('Error al guardar el historial de búsquedas', error);
-  }
+  } catch (error) {}
 };
 
 const loadSearchHistory = async () => {
@@ -22,9 +17,7 @@ const loadSearchHistory = async () => {
     if (history) {
       searchHistory = JSON.parse(history);
     }
-  } catch (error) {
-    console.error('Error al cargar el historial de búsquedas', error);
-  }
+  } catch (error) {}
 };
 
 // Cargar el historial de búsquedas al iniciar
@@ -36,11 +29,11 @@ export const getWeatherDetails = async (
   country: string,
 ) => {
   try {
-    const geoResponse = await axios.get(GEO_BASE_URL, {
+    const geoResponse = await axios.get(env.geoBaseUrl, {
       params: {
         q: `${city},${state},${country}`,
         limit: 1,
-        appid: API_KEY,
+        appid: env.apiKey,
       },
     });
 
@@ -52,11 +45,11 @@ export const getWeatherDetails = async (
 
     const {lat, lon} = geoResponse.data[0];
 
-    const weatherResponse = await axios.get(BASE_URL, {
+    const weatherResponse = await axios.get(env.baseUrl, {
       params: {
         lat,
         lon,
-        appid: API_KEY,
+        appid: env.apiKey,
         units: 'metric',
       },
     });
@@ -93,10 +86,10 @@ export const getWeatherDetails = async (
 
 export const getCitySuggestions = async (query: string) => {
   try {
-    const response = await axios.get(GEO_BASE_URL, {
+    const response = await axios.get(env.geoBaseUrl, {
       params: {
         q: query,
-        appid: API_KEY,
+        appid: env.apiKey,
         limit: 5,
       },
     });
@@ -123,7 +116,6 @@ export const getCitySuggestions = async (query: string) => {
 
     return uniqueCities;
   } catch (error) {
-    console.error('Error al obtener las sugerencias de ciudades', error);
     throw error;
   }
 };
@@ -137,7 +129,5 @@ export const clearSearchHistory = async () => {
   try {
     searchHistory = [];
     await AsyncStorage.removeItem('searchHistory');
-  } catch (error) {
-    console.error('Error al limpiar el historial de búsquedas', error);
-  }
+  } catch (error) {}
 };
