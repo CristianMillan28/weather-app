@@ -1,6 +1,6 @@
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useEffect, useState } from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import React, {useEffect, useState} from 'react';
 import {
   Button,
   FlatList,
@@ -12,16 +12,17 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { RootStackParamList } from '../../navigation/types';
-import { useSearchHistoryStore } from '../../store/useSearchHistoryStore';
-import { SearchHistory } from '../../types/SearchHistory';
+import {RootStackParamList} from '../../navigation/types';
+import {useSearchHistoryStore} from '../../store/useSearchHistoryStore';
+import {SearchHistory} from '../../types/SearchHistory';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
 const HomeScreen = () => {
   const [city, setCity] = useState('');
   const navigation = useNavigation<HomeScreenNavigationProp>();
-  const {history, fetchHistory, clearHistory, removeFromHistory} = useSearchHistoryStore();
+  const {history, fetchHistory, clearHistory, removeFromHistory} =
+    useSearchHistoryStore();
 
   useEffect(() => {
     fetchHistory();

@@ -96,7 +96,7 @@ const DetailsScreen = () => {
   );
 
   const isNight = momentOfDay === 'Noche' || momentOfDay === 'Anocheciendo';
-  const iconUrl = getWeatherIcon(weather.weatherCondition, isNight);
+  const iconUrl = getWeatherIcon(weather.description, isNight);
 
   const getTime = (timestamp: number, timezone: number) => {
     const date = new Date((timestamp + timezone) * 1000);
@@ -140,7 +140,6 @@ const DetailsScreen = () => {
           {state ? <Text style={styles.subtitle}>{state}</Text> : null}
           <CountryFlag isoCode={weather.country} size={16} />
         </View>
-
         <View style={styles.temperatureContainer}>
           <Text style={styles.temperatureText}>
             {Math.round(weather.temperature)}
@@ -149,6 +148,7 @@ const DetailsScreen = () => {
         </View>
         <Image source={iconUrl} style={styles.weatherIcon} />
         <Text style={styles.weatherDescription}>{weather.weatherCondition}</Text>
+        <Text style={styles.weatherDescription}>{weather.description}</Text>
         <Text style={styles.currentTime}>{currentTime}</Text>
       </View>
       <View style={styles.detailsContainer}>
@@ -205,26 +205,26 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     color: '#fff',
+    textAlign: 'center',
   },
   currentTime: {
     fontSize: 18,
     color: '#fff',
-    marginTop: 8,
+    textAlign: 'center',
   },
   subtitleContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    gap: 8,
   },
   subtitle: {
     fontSize: 18,
     color: '#fff',
-    marginRight: 8,
   },
   temperatureContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginTop: 16,
   },
   temperatureText: {
     fontSize: 96,
@@ -240,7 +240,6 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     objectFit: 'contain',
-    marginVertical: 16,
   },
   weatherDescription: {
     fontSize: 24,
