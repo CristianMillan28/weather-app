@@ -1,13 +1,14 @@
-import { RouteProp, useRoute } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import {RouteProp, useRoute} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {ActivityIndicator, Image, StyleSheet, Text, View} from 'react-native';
 import CountryFlag from 'react-native-country-flag';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { GetWeatherDetailsUseCase } from '../../domain/usecases/GetWeatherDetailsUseCase';
-import { RootStackParamList } from '../../navigation/types';
-import { useSearchHistoryStore } from '../../store/useSearchHistoryStore';
-import { Weather } from '../../types/Weather';
-import { BackButton } from '../components/GoBackButton';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {GetWeatherDetailsUseCase} from '../../domain/usecases/GetWeatherDetailsUseCase';
+import {RootStackParamList} from '../../navigation/types';
+import {useSearchHistoryStore} from '../../store/useSearchHistoryStore';
+import {Weather} from '../../types/Weather';
+import {BackButton} from '../components/GoBackButton';
+import {getWeatherIcon} from '../../utils/weatherIcons';
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'Details'>;
 
@@ -78,16 +79,7 @@ const DetailsScreen = () => {
     );
   }
 
-  const iconUrl = `https://openweathermap.org/img/wn/${weather.icon}@2x.png`;
-
-  const getTime = (timestamp: number, timezone: number) => {
-    const date = new Date((timestamp + timezone) * 1000);
-    return date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      timeZone: 'UTC',
-    });
-  };
+  const currentTimeInSeconds = Math.floor(Date.now() / 1000);
 
   const getMomentOfDay = (current: number, sunrise: number, sunset: number) => {
     if (current < sunrise) return 'Noche';
@@ -97,12 +89,23 @@ const DetailsScreen = () => {
     return 'Noche';
   };
 
-  const currentTimeInSeconds = Math.floor(Date.now() / 1000);
   const momentOfDay = getMomentOfDay(
     currentTimeInSeconds,
     weather.sunrise,
     weather.sunset,
   );
+
+  const isNight = momentOfDay === 'Noche' || momentOfDay === 'Anocheciendo';
+  const iconUrl = getWeatherIcon(weather.weatherCondition, isNight);
+
+  const getTime = (timestamp: number, timezone: number) => {
+    const date = new Date((timestamp + timezone) * 1000);
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: 'UTC',
+    });
+  };
 
   const getBackgroundColor = (moment: string) => {
     switch (moment) {
@@ -144,9 +147,9 @@ const DetailsScreen = () => {
           </Text>
           <Text style={styles.symbol}>°</Text>
         </View>
-        <Text style={styles.weatherDescription}>{weather.weather}</Text>
+        <Image source={iconUrl} style={styles.weatherIcon} />
+        <Text style={styles.weatherDescription}>{weather.weatherCondition}</Text>
         <Text style={styles.currentTime}>{currentTime}</Text>
-        {/* <Image source={{uri: iconUrl}} style={styles.weatherIcon} /> */}
       </View>
       <View style={styles.detailsContainer}>
         <View style={styles.detailRow}>
@@ -221,7 +224,7 @@ const styles = StyleSheet.create({
   temperatureContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginVertical: 16,
+    marginTop: 16,
   },
   temperatureText: {
     fontSize: 96,
@@ -234,7 +237,7 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   weatherIcon: {
-    width: 100,
+    width: 150,
     height: 100,
     marginVertical: 16,
   },

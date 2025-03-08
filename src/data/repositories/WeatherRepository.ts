@@ -68,7 +68,7 @@ export const getWeatherDetails = async (
       humidity: data.main.humidity,
       description: data.weather[0].description,
       icon: data.weather[0].icon,
-      weather: data.weather[0].main,
+      weatherCondition: data.weather[0].main,
       windSpeed: data.wind.speed,
       feelsLike: data.main.feels_like,
       city: data.name,

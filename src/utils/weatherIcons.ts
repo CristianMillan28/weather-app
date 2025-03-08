@@ -1,28 +1,82 @@
-
-const weatherIcons: { [key: string]: string } = {
-  Thunderstorm: '11d',
-  Drizzle: '09d',
-  Rain: '10d',
-  Snow: '13d',
-  Mist: '50d',
-  Smoke: '50d',
-  Haze: '50d',
-  Dust: '50d',
-  Fog: '50d',
-  Sand: '50d',
-  Ash: '50d',
-  Squall: '50d',
-  Tornado: '50d',
-  Clear: '01d',
-  Clouds: '02d',
+const weatherIcons: any = {
+  Thunderstorm: {
+    day: require('../assets/icons/cloud/bolt-rain.webp'),
+    night: require('../assets/icons/moon/2bolt-cloud.webp'),
+  },
+  Drizzle: {
+    day: require('../assets/icons/cloud/rain.webp'),
+    night: require('../assets/icons/moon/cloud-rain.webp'),
+  },
+  Rain: {
+    day: require('../assets/icons/cloud/rain.webp'),
+    night: require('../assets/icons/moon/cloud-rain.webp'),
+  },
+  Snow: {
+    day: require('../assets/icons/cloud/snow.webp'),
+    night: require('../assets/icons/moon/cloud-snow.webp'),
+  },
+  Mist: {
+    day: require('../assets/icons/cloud/cloud.webp'),
+    night: require('../assets/icons/moon/cloud.webp'),
+  },
+  Smoke: {
+    day: require('../assets/icons/cloud/cloud.webp'),
+    night: require('../assets/icons/moon/cloud.webp'),
+  },
+  Haze: {
+    day: require('../assets/icons/cloud/cloud.webp'),
+    night: require('../assets/icons/moon/cloud.webp'),
+  },
+  Dust: {
+    day: require('../assets/icons/cloud/cloud.webp'),
+    night: require('../assets/icons/moon/cloud.webp'),
+  },
+  Fog: {
+    day: require('../assets/icons/cloud/cloud.webp'),
+    night: require('../assets/icons/moon/cloud.webp'),
+  },
+  Sand: {
+    day: require('../assets/icons/cloud/cloud.webp'),
+    night: require('../assets/icons/moon/cloud.webp'),
+  },
+  Ash: {
+    day: require('../assets/icons/cloud/cloud.webp'),
+    night: require('../assets/icons/moon/cloud.webp'),
+  },
+  Squall: {
+    day: require('../assets/icons/cloud/cloud.webp'),
+    night: require('../assets/icons/moon/cloud.webp'),
+  },
+  Tornado: {
+    day: require('../assets/icons/cloud/cloud.webp'),
+    night: require('../assets/icons/moon/cloud.webp'),
+  },
+  Clear: {
+    day: require('../assets/icons/sun/sun.webp'),
+    night: require('../assets/icons/moon/moon.webp'),
+  },
+  'Few Clouds': {
+    day: require('../assets/icons/sun/cloud.webp'),
+    night: require('../assets/icons/moon/cloud.webp'),
+  },
+  'Scattered Clouds': {
+    day: require('../assets/icons/sun/cloud.webp'),
+    night: require('../assets/icons/moon/cloud.webp'),
+  },
+  'Broken Clouds': {
+    day: require('../assets/icons/sun/cloud.webp'),
+    night: require('../assets/icons/moon/cloud.webp'),
+  },
+  'Overcast Clouds': {
+    day: require('../assets/icons/sun/cloud.webp'),
+    night: require('../assets/icons/moon/cloud.webp'),
+  },
 };
 
-export const getWeatherIcon = (weather: string, isNight: boolean): string => {
-  if (weather === 'Clear') {
-    return isNight ? '01n' : '01d';
+export const getWeatherIcon = (weatherCondition: string, isNight: boolean) => {
+  let icon = weatherIcons[weatherCondition];
+  if (!icon) {
+    icon = weatherIcons.Clear;
   }
-  if (weather === 'Clouds') {
-    return isNight ? '02n' : '02d';
-  }
-  return weatherIcons[weather] || '01d';
+  return isNight ? icon.night : icon.day;
 };

@@ -3,7 +3,7 @@ export interface Weather {
   humidity: number;
   description: string;
   windSpeed: number;
-  weather: string;
+  weatherCondition: string;
   feelsLike: number;
   city: string;
   country: string;
