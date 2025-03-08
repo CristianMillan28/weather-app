@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import ErrorMessage from './ErrorMessage';
+import ErrorMessage from '../../../components/ErrorMessage';
 import {StyleSheet, View} from 'react-native';
 
 const EmptyHistory = () => {

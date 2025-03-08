@@ -10,9 +10,9 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
-import CitySuggestionsScreen from './src/presentation/screens/CitySuggestionsScreen';
-import DetailsScreen from './src/presentation/screens/DetailsScreen';
-import HomeScreen from './src/presentation/screens/HomeScreen';
+import CitySuggestionsScreen from './src/presentation/screens/city-suggestions/CitySuggestionsScreen';
+import DetailsScreen from './src/presentation/screens/details/DetailsScreen';
+import HomeScreen from './src/presentation/screens/home/HomeScreen';
 
 const Stack = createStackNavigator();
 

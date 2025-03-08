@@ -1,10 +1,10 @@
 import React from 'react';
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {colors} from '../../constants/colors';
-import {SearchHistory} from '../../data/models/SearchHistory';
-import ListItem from './ListItem';
-import {useSearchHistoryStore} from '../../domain/store/useSearchHistoryStore';
+import {colors} from '../../../../constants/colors';
+import {SearchHistory} from '../../../../data/models/SearchHistory';
+import ListItem from '../../../components/ListItem';
+import {useSearchHistoryStore} from '../../../../domain/store/useSearchHistoryStore';
 import {useNavigation} from '@react-navigation/native';
 
 interface HistoryListProps {}

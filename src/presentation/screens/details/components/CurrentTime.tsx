@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text} from 'react-native';
-import {colors} from '../../constants/colors';
-import {Weather} from '../../data/models/Weather';
+import {colors} from '../../../../constants/colors';
+import {Weather} from '../../../../data/models/Weather';
 
 interface CurrentTimeProps {
   weather: Weather;

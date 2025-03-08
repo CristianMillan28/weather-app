@@ -8,13 +8,13 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useCallback, useEffect, useState} from 'react';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {colors} from '../../constants/colors';
-import {SearchHistory} from '../../data/models/SearchHistory';
-import {GetCitySuggestionsUseCase} from '../../domain/usecases/GetCitySuggestionsUseCase';
-import LoadingIndicator from '../components/LoadingIndicator';
-import ListItem from '../components/ListItem';
-import {RootStackParamList} from '../navigation/types';
-import ErrorMessage from '../components/ErrorMessage';
+import {colors} from '../../../constants/colors';
+import {SearchHistory} from '../../../data/models/SearchHistory';
+import {GetCitySuggestionsUseCase} from '../../../domain/usecases/GetCitySuggestionsUseCase';
+import LoadingIndicator from '../../components/LoadingIndicator';
+import ListItem from '../../components/ListItem';
+import {RootStackParamList} from '../../navigation/types';
+import ErrorMessage from '../../components/ErrorMessage';
 
 type CitySuggestionsScreenRouteProp = RouteProp<
   RootStackParamList,

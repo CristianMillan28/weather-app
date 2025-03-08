@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, TextInput, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {colors} from '../../constants/colors';
+import {colors} from '../../../../constants/colors';
 
 interface SearchInputProps {
   city: string;

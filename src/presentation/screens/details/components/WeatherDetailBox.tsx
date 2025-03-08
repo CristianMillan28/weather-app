@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { colors } from '../../constants/colors';
+import { colors } from '../../../../constants/colors';
 
 interface WeatherDetailBoxProps {
   iconName: string;

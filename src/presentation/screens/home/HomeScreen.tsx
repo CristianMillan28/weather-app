@@ -1,14 +1,14 @@
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import React, {useEffect, useState} from 'react';
-import {KeyboardAvoidingView, Platform, StyleSheet, Text} from 'react-native';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {colors} from '../../constants/colors';
-import {useSearchHistoryStore} from '../../domain/store/useSearchHistoryStore';
-import EmptyHistory from '../components/EmptyHistory';
-import HistoryList from '../components/HistoryList';
-import SearchInput from '../components/SearchInput';
-import {RootStackParamList} from '../navigation/types';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import React, { useEffect, useState } from 'react';
+import { KeyboardAvoidingView, Platform, StyleSheet, Text } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { colors } from '../../../constants/colors';
+import { useSearchHistoryStore } from '../../../domain/store/useSearchHistoryStore';
+import EmptyHistory from './components/EmptyHistory';
+import HistoryList from './components/HistoryList';
+import SearchInput from './components/SearchInput';
+import { RootStackParamList } from '../../navigation/types';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
@@ -72,39 +72,40 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: colors.primary,
   },
-  clearButton: {
-    marginRight: 8,
-  },
-  searchButton: {
-    backgroundColor: colors.primary,
-    padding: 8,
-    borderRadius: 100,
-  },
-  clearHistoryContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-    marginTop: 16,
-  },
-  clearHistoryText: {
-    color: colors.darkGray,
-    marginLeft: 8,
-  },
-  emptyHistoryContainer: {
-    marginTop: 64,
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 32,
-  },
-  emptyHistoryText: {
-    fontSize: 16,
-    color: colors.gray,
-  },
-  weatherIcon: {
-    width: 160,
-    height: 160,
-    objectFit: 'contain',
-  },
+  // Eliminar estilos no utilizados
+  // clearButton: {
+  //   marginRight: 8,
+  // },
+  // searchButton: {
+  //   backgroundColor: colors.primary,
+  //   padding: 8,
+  //   borderRadius: 100,
+  // },
+  // clearHistoryContainer: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   marginBottom: 16,
+  //   marginTop: 16,
+  // },
+  // clearHistoryText: {
+  //   color: colors.darkGray,
+  //   marginLeft: 8,
+  // },
+  // emptyHistoryContainer: {
+  //   marginTop: 64,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   gap: 32,
+  // },
+  // emptyHistoryText: {
+  //   fontSize: 16,
+  //   color: colors.gray,
+  // },
+  // weatherIcon: {
+  //   width: 160,
+  //   height: 160,
+  //   objectFit: 'contain',
+  // },
 });
 
 export default HomeScreen;

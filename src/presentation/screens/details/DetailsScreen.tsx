@@ -3,20 +3,20 @@ import React, {useEffect, useState} from 'react';
 import {Animated, StyleSheet, Text, View} from 'react-native';
 import CountryFlag from 'react-native-country-flag';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {colors} from '../../constants/colors';
-import {Weather} from '../../data/models/Weather';
-import {useSearchHistoryStore} from '../../domain/store/useSearchHistoryStore';
-import {GetWeatherDetailsUseCase} from '../../domain/usecases/GetWeatherDetailsUseCase';
-import LoadingIndicator from '../components/LoadingIndicator';
-import WeatherDetailBox from '../components/WeatherDetailBox';
-import {RootStackParamList} from '../navigation/types';
-import {weatherDescriptions} from '../utils/weatherDescriptions';
-import {getWeatherIcon} from '../utils/weatherIcons';
-import ErrorMessage from '../components/ErrorMessage';
-import {getMomentOfDay, MomentOfDay} from '../utils/momentOfDay';
-import {getBackgroundColor} from '../utils/backgroundColor';
-import CurrentTime from '../components/CurrentTime';
-import AnimatedWeatherIcon from '../components/AnimatedWeatherIcon';
+import {colors} from '../../../constants/colors';
+import {Weather} from '../../../data/models/Weather';
+import {useSearchHistoryStore} from '../../../domain/store/useSearchHistoryStore';
+import {GetWeatherDetailsUseCase} from '../../../domain/usecases/GetWeatherDetailsUseCase';
+import LoadingIndicator from '../../components/LoadingIndicator';
+import WeatherDetailBox from './components/WeatherDetailBox';
+import {RootStackParamList} from '../../navigation/types';
+import {weatherDescriptions} from '../../utils/weatherDescriptions';
+import {getWeatherIcon} from '../../utils/weatherIcons';
+import ErrorMessage from '../../components/ErrorMessage';
+import {getMomentOfDay, MomentOfDay} from '../../utils/momentOfDay';
+import {getBackgroundColor} from '../../utils/backgroundColor';
+import CurrentTime from './components/CurrentTime';
+import AnimatedWeatherIcon from './components/AnimatedWeatherIcon';
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'Details'>;
 
@@ -30,7 +30,6 @@ const DetailsScreen = () => {
   const [error, setError] = useState<string | null>(null);
   const {addToHistory} = useSearchHistoryStore();
   const fadeAnim = useState(new Animated.Value(0))[0];
-  const pulseAnim = useState(new Animated.Value(1))[0];
 
   const handleGetWeatherDetails = async () => {
     const parsedState = state ? state.replaceAll(',', '') : '';
@@ -62,22 +61,6 @@ const DetailsScreen = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [city, state, country]);
 
-  useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulseAnim, {
-          toValue: 1.05,
-          duration: 750,
-          useNativeDriver: true,
-        }),
-        Animated.timing(pulseAnim, {
-          toValue: 1,
-          duration: 750,
-          useNativeDriver: true,
-        }),
-      ]),
-    ).start();
-  }, [pulseAnim]);
 
   if (loading) {
     return <LoadingIndicator />;
@@ -133,7 +116,7 @@ const DetailsScreen = () => {
           </View>
         </View>
         <View>
-          <AnimatedWeatherIcon iconUrl={iconUrl} pulseAnim={pulseAnim} />
+          <AnimatedWeatherIcon iconUrl={iconUrl} />
           <Text style={styles.weatherDescription}>
             {weatherDescriptions[weather.description]}
           </Text>
@@ -185,11 +168,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 8,
   },
-  currentTime: {
-    fontSize: 18,
-    color: colors.white,
-    textAlign: 'center',
-  },
   subtitleContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -214,69 +192,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: colors.white,
   },
-  weatherIcon: {
-    width: 200,
-    height: 200,
-    objectFit: 'contain',
-  },
   weatherDescription: {
     fontSize: 24,
     color: colors.white,
     textAlign: 'center',
-  },
-  detailsContainer: {
-    padding: 16,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 8,
-  },
-  detailLabel: {
-    fontSize: 18,
-    color: colors.darkGray,
-  },
-  detailValue: {
-    fontSize: 18,
-    color: colors.mediumGray,
-  },
-  error: {
-    color: colors.errorRed,
-    textAlign: 'center',
-    marginTop: 20,
   },
   flexContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginTop: 16,
     paddingHorizontal: 16,
-  },
-  flexBox: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    borderRadius: 16,
-    padding: 16,
-    width: '30%',
-  },
-  separator: {
-    width: 1,
-    backgroundColor: colors.separatorGray,
-    marginHorizontal: 8,
-  },
-  icon: {
-    width: 40,
-    height: 40,
-  },
-  flexTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 8,
-    textAlign: 'center',
-  },
-  flexDescription: {
-    fontSize: 14,
-    color: colors.darkGray,
-    marginTop: 4,
   },
 });
 
