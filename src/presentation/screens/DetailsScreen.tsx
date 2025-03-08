@@ -238,7 +238,8 @@ const styles = StyleSheet.create({
   },
   weatherIcon: {
     width: 150,
-    height: 100,
+    height: 150,
+    objectFit: 'contain',
     marginVertical: 16,
   },
   weatherDescription: {

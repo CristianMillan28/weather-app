@@ -11,6 +11,7 @@ interface SearchHistoryState {
   fetchHistory: () => Promise<void>;
   addToHistory: (historyItem: SearchHistory) => Promise<void>;
   clearHistory: () => Promise<void>;
+  removeFromHistory: (id: number) => Promise<void>;
 }
 
 export const useSearchHistoryStore = create<SearchHistoryState>(set => ({
@@ -27,6 +28,12 @@ export const useSearchHistoryStore = create<SearchHistoryState>(set => ({
       await saveSearchHistory(searchHistory);
       set({history: searchHistory});
     }
+  },
+  removeFromHistory: async (id: number) => {
+    const searchHistory = await getSearchHistory();
+    const newHistory = searchHistory.filter(item => item.id !== id);
+    await saveSearchHistory(newHistory);
+    set({history: newHistory || []});
   },
   clearHistory: async () => {
     await clearSearchHistory();
