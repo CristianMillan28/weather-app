@@ -9,6 +9,7 @@ import {useSearchHistoryStore} from '../../store/useSearchHistoryStore';
 import {Weather} from '../../types/Weather';
 import {BackButton} from '../components/GoBackButton';
 import {getWeatherIcon} from '../../utils/weatherIcons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'Details'>;
 
@@ -123,16 +124,16 @@ const DetailsScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View
-        style={[
-          styles.topContainer,
-          {
-            paddingTop: top + 32,
-            backgroundColor: getBackgroundColor(momentOfDay),
-          },
-        ]}>
-        <View style={{position: 'absolute', left: 16, top: 16 + top}}>
+    <View
+      style={[
+        styles.container,
+        {
+          paddingTop: top + 32,
+          backgroundColor: getBackgroundColor(momentOfDay),
+        },
+      ]}>
+      <View style={[styles.topContainer]}>
+        <View style={{position: 'absolute', left: 16}}>
           <BackButton />
         </View>
         <Text style={styles.title}>{weather.city}</Text>
@@ -147,42 +148,27 @@ const DetailsScreen = () => {
           <Text style={styles.symbol}>°</Text>
         </View>
         <Image source={iconUrl} style={styles.weatherIcon} />
-        <Text style={styles.weatherDescription}>{weather.weatherCondition}</Text>
-        <Text style={styles.weatherDescription}>{weather.description}</Text>
+        <Text style={styles.weatherDescription}>
+          {weather.weatherCondition}
+        </Text>
+        {/* <Text style={styles.weatherDescription}>{weather.description}</Text> */}
         <Text style={styles.currentTime}>{currentTime}</Text>
       </View>
-      <View style={styles.detailsContainer}>
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Humedad:</Text>
-          <Text style={styles.detailValue}>{weather.humidity}%</Text>
+      <View style={styles.flexContainer}>
+        <View style={styles.flexBox}>
+          <Icon name="water-percent" size={40} color="#555" />
+          <Text style={styles.flexTitle}>Humedad</Text>
+          <Text style={styles.flexDescription}>{weather.humidity}%</Text>
         </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Estado:</Text>
-          <Text style={styles.detailValue}>{weather.description}</Text>
+        <View style={styles.flexBox}>
+          <Icon name="weather-windy" size={40} color="#555" />
+          <Text style={styles.flexTitle}>Viento</Text>
+          <Text style={styles.flexDescription}>{weather.windSpeed} m/s</Text>
         </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Viento:</Text>
-          <Text style={styles.detailValue}>{weather.windSpeed} m/s</Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Sensación Térmica:</Text>
-          <Text style={styles.detailValue}>{weather.feelsLike}°C</Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Amanecer:</Text>
-          <Text style={styles.detailValue}>
-            {getTime(weather.sunrise, weather.timezone)}
-          </Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Atardecer:</Text>
-          <Text style={styles.detailValue}>
-            {getTime(weather.sunset, weather.timezone)}
-          </Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={styles.detailLabel}>Momento del día:</Text>
-          <Text style={styles.detailValue}>{momentOfDay}</Text>
+        <View style={styles.flexBox}>
+          <Icon name="thermometer" size={40} color="#555" />
+          <Text style={styles.flexTitle}>Sensación Térmica</Text>
+          <Text style={styles.flexDescription}>{weather.feelsLike}°C</Text>
         </View>
       </View>
     </View>
@@ -195,7 +181,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f0f0f0',
   },
   topContainer: {
-    padding: 32,
     borderBottomLeftRadius: 64,
     borderBottomRightRadius: 64,
     alignItems: 'center',
@@ -266,6 +251,39 @@ const styles = StyleSheet.create({
     color: 'red',
     textAlign: 'center',
     marginTop: 20,
+  },
+  flexContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 16,
+    paddingHorizontal: 16,
+  },
+  flexBox: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 16,
+    padding: 16,
+    width: '30%',
+  },
+  separator: {
+    width: 1,
+    backgroundColor: '#ccc',
+    marginHorizontal: 8,
+  },
+  icon: {
+    width: 40,
+    height: 40,
+  },
+  flexTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  flexDescription: {
+    fontSize: 14,
+    color: '#555',
+    marginTop: 4,
   },
 });
 
