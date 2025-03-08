@@ -1,4 +1,4 @@
-const weatherIcons = {
+export const weatherIcons = {
   // Cloud Icons
   '2bolt-snow': require('../assets/icons/cloud/2bolt-snow.webp'),
   '2bolt-wind': require('../assets/icons/cloud/2bolt-wind.webp'),

@@ -19,28 +19,16 @@ const Stack = createStackNavigator();
 function App(): React.JSX.Element {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="Details"
-          component={DetailsScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="CitySuggestions"
-          component={CitySuggestionsScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
+      <Stack.Navigator
+        initialRouteName="Home"
+        screenOptions={{
+          headerTransparent: true,
+          headerTitle: '',
+          headerTintColor: '#fff', // Color blanco para el botón de "Go Back"
+        }}>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="CitySuggestions" component={CitySuggestionsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

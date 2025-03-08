@@ -12,7 +12,7 @@ export const BackButton: React.FC<Props> = ({}) => {
 
   return (
     <HeaderBackButton
-      tintColor={'#fff'}
+      tintColor={'#000'}
       onPress={handleGoBack}
     />
   );

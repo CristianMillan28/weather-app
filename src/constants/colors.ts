@@ -9,5 +9,6 @@ export const colors = {
   mediumGray: '#333',
   errorRed: 'red',
   separatorGray: '#ccc',
-  primary: '#4A90E2', // Color primario amigable a la vista
+  primary: '#4A90E2',
+  gray: '#A9A9A9',
 };

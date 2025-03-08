@@ -1,17 +1,17 @@
-import {RouteProp, useRoute} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, Image, StyleSheet, Text, View} from 'react-native';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { Animated, Image, StyleSheet, Text, View } from 'react-native';
 import CountryFlag from 'react-native-country-flag';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {GetWeatherDetailsUseCase} from '../../domain/usecases/GetWeatherDetailsUseCase';
-import {RootStackParamList} from '../navigation/types';
-import {useSearchHistoryStore} from '../../domain/store/useSearchHistoryStore';
-import {Weather} from '../../data/models/Weather';
-import {weatherDescriptions} from '../utils/weatherDescriptions';
-import {getWeatherIcon} from '../utils/weatherIcons';
-import {BackButton} from '../components/GoBackButton';
-import WeatherDetailBox from '../components/WeatherDetailBox';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../../constants/colors';
+import { Weather } from '../../data/models/Weather';
+import { useSearchHistoryStore } from '../../domain/store/useSearchHistoryStore';
+import { GetWeatherDetailsUseCase } from '../../domain/usecases/GetWeatherDetailsUseCase';
+import LoadingIndicator from '../components/LoadingIndicator';
+import WeatherDetailBox from '../components/WeatherDetailBox';
+import { RootStackParamList } from '../navigation/types';
+import { weatherDescriptions } from '../utils/weatherDescriptions';
+import { getWeatherIcon } from '../utils/weatherIcons';
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'Details'>;
 
@@ -25,20 +25,27 @@ const DetailsScreen = () => {
   const [error, setError] = useState<string | null>(null);
   const {addToHistory} = useSearchHistoryStore();
   const [currentTime, setCurrentTime] = useState<string>('');
+  const fadeAnim = useState(new Animated.Value(0))[0];
 
   const handleGetWeatherDetails = async () => {
+    const parsedState = state ? state.replaceAll(',', '') : '';
     try {
-      const data = await GetWeatherDetailsUseCase(city, state, country);
+      const data = await GetWeatherDetailsUseCase(city, parsedState, country);
       setWeather(data);
       addToHistory({
         id: data.id,
         lat: data.lat,
         lon: data.lon,
         city,
-        state: state || '',
+        state: parsedState,
         country,
       });
       setLoading(false);
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
     } catch (error: any) {
       setError(error.message);
       setLoading(false);
@@ -67,7 +74,17 @@ const DetailsScreen = () => {
   }, [weather]);
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return (
+      <View
+        style={[
+          styles.container,
+          {
+            backgroundColor: colors.primary,
+          },
+        ]}>
+        <LoadingIndicator />
+      </View>
+    );
   }
 
   if (error) {
@@ -117,7 +134,7 @@ const DetailsScreen = () => {
   };
 
   return (
-    <View style={[styles.container]}>
+    <Animated.View style={[styles.container, {opacity: fadeAnim}]}>
       <View
         style={[
           styles.topContainer,
@@ -126,9 +143,6 @@ const DetailsScreen = () => {
             backgroundColor: getBackgroundColor(momentOfDay),
           },
         ]}>
-        <View style={{position: 'absolute', left: 16, top: 16 + top}}>
-          <BackButton />
-        </View>
         <Text style={styles.title}>{weather.city}</Text>
         <View style={styles.subtitleContainer}>
           {state ? <Text style={styles.subtitle}>{state}</Text> : null}
@@ -164,7 +178,7 @@ const DetailsScreen = () => {
           value={`${Math.round(weather.feelsLike)}°C`}
         />
       </View>
-    </View>
+    </Animated.View>
   );
 };
 

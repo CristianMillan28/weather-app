@@ -2,7 +2,6 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useEffect, useState} from 'react';
 import {
-  Button,
   FlatList,
   KeyboardAvoidingView,
   Platform,
@@ -11,13 +10,17 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Image,
 } from 'react-native';
-import {RootStackParamList} from '../navigation/types';
-import {useSearchHistoryStore} from '../../domain/store/useSearchHistoryStore';
-import {SearchHistory} from '../../data/models/SearchHistory';
-import CountryFlag from 'react-native-country-flag';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {colors} from '../../constants/colors';
+import {SearchHistory} from '../../data/models/SearchHistory';
+import {useSearchHistoryStore} from '../../domain/store/useSearchHistoryStore';
+import ListItem from '../components/ListItem';
+import {RootStackParamList} from '../navigation/types';
+import {weatherIcons} from '../utils/weatherIcons';
+import EmptyHistory from '../components/EmptyHistory';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
@@ -33,16 +36,16 @@ const HomeScreen = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const clearInput = () => {
+    setCity('');
+  };
+
   const handleSearch = () => {
     if (city.trim()) {
       navigation.navigate('CitySuggestions', {query: city});
+      clearInput();
     } else {
-      // alert('Por favor ingrese una ciudad válida.');
     }
-  };
-
-  const handleClearHistory = async () => {
-    await clearHistory();
   };
 
   const handleHistoryPress = (historyItem: SearchHistory) => {
@@ -57,6 +60,10 @@ const HomeScreen = () => {
     await removeFromHistory(id);
   };
 
+  const handleClearHistory = async () => {
+    await clearHistory();
+  };
+
   return (
     <KeyboardAvoidingView
       style={[
@@ -67,40 +74,56 @@ const HomeScreen = () => {
       ]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <Text style={styles.title}>Consulta el Clima</Text>
-      <View>
-        <TextInput
-          style={styles.input}
-          placeholder="Ingrese el nombre de la ciudad"
-          value={city}
-          onChangeText={handleCityChange}
-        />
-        <View>
-          <Icon name="search" />
+      <View style={styles.searchContainer}>
+        <View style={styles.searchInputContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Ingrese el nombre de la ciudad"
+            value={city}
+            onChangeText={handleCityChange}
+            onSubmitEditing={handleSearch}
+            placeholderTextColor={colors.gray}
+          />
+          {city.length > 0 && (
+            <TouchableOpacity onPress={clearInput} style={styles.clearButton}>
+              <Icon name="close-circle" size={24} color={colors.darkGray} />
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={handleSearch}
+            style={styles.searchButton}>
+            <Icon name="search" size={24} color={colors.white} />
+          </TouchableOpacity>
         </View>
       </View>
-      <View style={styles.buttonContainer}>
-        <Button title="Buscar" onPress={handleSearch} />
-        <Button title="Limpiar Historial" onPress={handleClearHistory} />
-      </View>
-      <FlatList
-        data={history}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => (
-          <View style={styles.historyItemContainer}>
-            <TouchableOpacity onPress={() => handleHistoryPress(item)}>
-              <View style={styles.historyItem}>
-                <Text>
-                  {item.city},{item.state || 'N/A'}, {item.country}
-                </Text>
-                <CountryFlag isoCode={item.country} size={25} />
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleRemoveHistoryItem(item.id)}>
-              <Text style={styles.removeButton}>X</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      />
+
+      {history.length > 0 ? (
+        <>
+          <TouchableOpacity
+            activeOpacity={0.5}
+            onPress={handleClearHistory}
+            style={styles.clearHistoryContainer}>
+            <Icon name="trash" size={20} color={colors.darkGray} />
+            <Text style={styles.clearHistoryText}>Limpiar Historial</Text>
+          </TouchableOpacity>
+          <FlatList
+            data={history}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({item}) => (
+              <ListItem
+                item={item}
+                onPress={() => handleHistoryPress(item)}
+                showRemoveButton={true}
+                onRemove={() => handleRemoveHistoryItem(item.id)}
+              />
+            )}
+            ItemSeparatorComponent={() => <View style={{height: 8}} />}
+          />
+        </>
+      ) : (
+        <EmptyHistory />
+      )}
     </KeyboardAvoidingView>
   );
 };
@@ -110,55 +133,64 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    padding: 16,
-  },
   title: {
     fontSize: 24,
     marginBottom: 16,
     textAlign: 'center',
   },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 16,
-    paddingHorizontal: 8,
-    borderRadius: 8,
-  },
-  buttonContainer: {
+  searchContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  historyItemContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    gap: 8,
   },
-  historyItem: {
-    padding: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: 'gray',
-    borderRadius: 8,
-    marginBottom: 8,
+  searchInputContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderColor: colors.separatorGray,
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderRadius: 100,
+    flex: 1,
+    marginRight: 8, // Espacio entre el input y el botón de buscar
   },
-  removeButton: {
-    color: 'red',
-    fontWeight: 'bold',
-    padding: 8,
+  input: {
+    flex: 1,
+    height: 40,
+    paddingHorizontal: 16,
+    color: colors.darkGray,
   },
-  suggestionItem: {
+  clearButton: {
+    marginRight: 8,
+  },
+  searchButton: {
+    backgroundColor: colors.primary,
     padding: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: 'gray',
-    borderRadius: 8,
-    marginBottom: 8,
+    borderRadius: 100,
+  },
+  clearHistoryContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+    marginTop: 16,
+  },
+  clearHistoryText: {
+    color: colors.darkGray,
+    marginLeft: 8,
+  },
+  emptyHistoryContainer: {
+    marginTop: 64,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 32,
+  },
+  emptyHistoryText: {
+    fontSize: 16,
+    color: colors.gray,
+  },
+  weatherIcon: {
+    width: 160,
+    height: 160,
+    objectFit: 'contain',
   },
 });
 
