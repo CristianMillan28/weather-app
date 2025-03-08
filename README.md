@@ -25,22 +25,44 @@ Esta es una aplicación de clima desarrollada en React Native que permite al usu
    ```
 
 3. Configura tu API Key de OpenWeather:
-   - Abre el archivo `src/data/repositories/WeatherRepository.ts`.
-   - Reemplaza `YOUR_OPENWEATHER_API_KEY` con tu clave de API de OpenWeather.
+   - Crea un archivo `.env` en la raíz del proyecto.
+   - Agrega las siguientes líneas al archivo `.env` y reemplaza `API_KEY` con tu clave de API de OpenWeather:
+     ```
+     API_KEY=YOUR_API_KEY
+     BASE_URL=https://api.openweathermap.org/data/2.5/weather
+     GEO_BASE_URL=https://api.openweathermap.org/geo/1.0/direct
+     ```
 
 ## Ejecución
 
-1. Inicia la aplicación en un dispositivo o emulador:
+1. Inicia el servidor de Metro:
    ```bash
-   npx react-native run-android
+   npm start
    # o
-   npx react-native run-ios
+   yarn start
+   ```
+
+2. En una nueva terminal, inicia la aplicación en un dispositivo o emulador:
+
+   ### Android
+   ```bash
+   npm run android
+   # o
+   yarn android
+   ```
+
+   ### iOS
+   ```bash
+   npm run ios
+   # o
+   yarn ios
    ```
 
 ## Estructura del Proyecto
 
 - `src/presentation/screens`: Contiene las pantallas de la aplicación.
 - `src/data/repositories`: Contiene los repositorios para la obtención de datos.
+- `src/config`: Contiene la configuración de las variables de entorno.
 
 ## Funcionalidades
 
@@ -152,6 +174,3 @@ To learn more about React Native, take a look at the following resources:
 - [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
 - [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
 - [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
-# weather-app
-# weather-app
-# weather-app
