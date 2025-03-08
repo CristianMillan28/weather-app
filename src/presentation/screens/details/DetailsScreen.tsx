@@ -94,7 +94,7 @@ const DetailsScreen = () => {
 
   return (
     <Animated.View
-      style={[styles.container, {opacity: fadeAnim, paddingBottom: bottom}]}>
+      style={[styles.container, {opacity: fadeAnim, paddingBottom: bottom + 16}]}>
       <View
         style={[
           styles.topContainer,

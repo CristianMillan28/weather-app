@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Platform} from 'react-native';
 import CountryFlag from 'react-native-country-flag';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {colors} from '../../constants/colors';
@@ -52,6 +52,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 1,
     elevation: 5,
+    ...Platform.select({
+      android: {
+        elevation: 3,
+        shadowColor: 'rgba(0, 0, 0, 0.1)',
+      },
+    }),
   },
   cityInfo: {
     flex: 1,
