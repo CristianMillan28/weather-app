@@ -1,9 +1,9 @@
-import {SearchHistory} from '../types/SearchHistory';
+import {SearchHistory} from '../../data/models/SearchHistory';
 import {
   getSearchHistory,
   clearSearchHistory,
   saveSearchHistory,
-} from '../data/repositories/WeatherRepository';
+} from '../../data/repositories/WeatherRepository';
 
 export const fetchSearchHistory = async (): Promise<SearchHistory[]> => {
   return await getSearchHistory();

@@ -24,14 +24,13 @@ function App(): React.JSX.Element {
           name="Home"
           component={HomeScreen}
           options={{
-            title: '',
+            headerShown: false,
           }}
         />
         <Stack.Screen
           name="Details"
           component={DetailsScreen}
           options={{
-            title: '',
             headerShown: false,
           }}
         />
@@ -39,7 +38,7 @@ function App(): React.JSX.Element {
           name="CitySuggestions"
           component={CitySuggestionsScreen}
           options={{
-            title: '',
+            headerShown: false,
           }}
         />
       </Stack.Navigator>

@@ -3,8 +3,8 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useEffect, useState} from 'react';
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {GetCitySuggestionsUseCase} from '../../domain/usecases/GetCitySuggestionsUseCase';
-import {RootStackParamList} from '../../navigation/types';
-import {SearchHistory} from '../../types/SearchHistory';
+import {RootStackParamList} from '../navigation/types';
+import {SearchHistory} from '../../data/models/SearchHistory';
 import CountryFlag from 'react-native-country-flag';
 
 type CitySuggestionsScreenRouteProp = RouteProp<
@@ -54,11 +54,13 @@ const CitySuggestionsScreen = () => {
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item}) => (
           <TouchableOpacity onPress={() => handleSuggestionPress(item)}>
-            <View style={styles.suggestionItem}>
+            <View style={{}}>
+              <Text>{item.city}</Text>
+              {item.state ? <Text>{item.state}</Text> : null}
               <Text>
-                {item.city}, {item.state || 'N/A'}, {item.country}
+                <CountryFlag isoCode={item.country} size={16} />
+                {item.country}
               </Text>
-              <CountryFlag isoCode={item.country} size={25} />
             </View>
           </TouchableOpacity>
         )}
@@ -77,15 +79,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     textAlign: 'center',
   },
-  suggestionItem: {
-    padding: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: 'gray',
-    borderRadius: 8,
-    marginBottom: 8,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
+  suggestionItem: {},
 });
 
 export default CitySuggestionsScreen;

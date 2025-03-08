@@ -4,12 +4,14 @@ import {ActivityIndicator, Image, StyleSheet, Text, View} from 'react-native';
 import CountryFlag from 'react-native-country-flag';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {GetWeatherDetailsUseCase} from '../../domain/usecases/GetWeatherDetailsUseCase';
-import {RootStackParamList} from '../../navigation/types';
-import {useSearchHistoryStore} from '../../store/useSearchHistoryStore';
-import {Weather} from '../../types/Weather';
+import {RootStackParamList} from '../navigation/types';
+import {useSearchHistoryStore} from '../../domain/store/useSearchHistoryStore';
+import {Weather} from '../../data/models/Weather';
+import {weatherDescriptions} from '../utils/weatherDescriptions';
+import {getWeatherIcon} from '../utils/weatherIcons';
 import {BackButton} from '../components/GoBackButton';
-import {getWeatherIcon} from '../../utils/weatherIcons';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import WeatherDetailBox from '../components/WeatherDetailBox';
+import { colors } from '../../constants/colors';
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'Details'>;
 
@@ -99,41 +101,32 @@ const DetailsScreen = () => {
   const isNight = momentOfDay === 'Noche' || momentOfDay === 'Anocheciendo';
   const iconUrl = getWeatherIcon(weather.description, isNight);
 
-  const getTime = (timestamp: number, timezone: number) => {
-    const date = new Date((timestamp + timezone) * 1000);
-    return date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      timeZone: 'UTC',
-    });
-  };
-
   const getBackgroundColor = (moment: string) => {
     switch (moment) {
       case 'Noche':
-        return '#2c3e50';
+        return colors.backgroundNight;
       case 'Amaneciendo':
-        return '#f39c12';
+        return colors.backgroundDawn;
       case 'Día':
-        return '#87CEEB';
+        return colors.backgroundDay;
       case 'Anocheciendo':
-        return '#e74c3c';
+        return colors.backgroundDusk;
       default:
-        return '#87CEEB';
+        return colors.backgroundDay;
     }
   };
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          paddingTop: top + 32,
-          backgroundColor: getBackgroundColor(momentOfDay),
-        },
-      ]}>
-      <View style={[styles.topContainer]}>
-        <View style={{position: 'absolute', left: 16}}>
+    <View style={[styles.container]}>
+      <View
+        style={[
+          styles.topContainer,
+          {
+            paddingTop: top + 32,
+            backgroundColor: getBackgroundColor(momentOfDay),
+          },
+        ]}>
+        <View style={{position: 'absolute', left: 16, top: 16 + top}}>
           <BackButton />
         </View>
         <Text style={styles.title}>{weather.city}</Text>
@@ -149,27 +142,27 @@ const DetailsScreen = () => {
         </View>
         <Image source={iconUrl} style={styles.weatherIcon} />
         <Text style={styles.weatherDescription}>
-          {weather.weatherCondition}
+          {weatherDescriptions[weather.description]}
         </Text>
         {/* <Text style={styles.weatherDescription}>{weather.description}</Text> */}
         <Text style={styles.currentTime}>{currentTime}</Text>
       </View>
       <View style={styles.flexContainer}>
-        <View style={styles.flexBox}>
-          <Icon name="water-percent" size={40} color="#555" />
-          <Text style={styles.flexTitle}>Humedad</Text>
-          <Text style={styles.flexDescription}>{weather.humidity}%</Text>
-        </View>
-        <View style={styles.flexBox}>
-          <Icon name="weather-windy" size={40} color="#555" />
-          <Text style={styles.flexTitle}>Viento</Text>
-          <Text style={styles.flexDescription}>{weather.windSpeed} m/s</Text>
-        </View>
-        <View style={styles.flexBox}>
-          <Icon name="thermometer" size={40} color="#555" />
-          <Text style={styles.flexTitle}>Sensación Térmica</Text>
-          <Text style={styles.flexDescription}>{weather.feelsLike}°C</Text>
-        </View>
+        <WeatherDetailBox
+          iconName="water-percent"
+          title="Humedad"
+          value={`${weather.humidity}%`}
+        />
+        <WeatherDetailBox
+          iconName="weather-windy"
+          title="Viento"
+          value={`${weather.windSpeed} m/s`}
+        />
+        <WeatherDetailBox
+          iconName="thermometer"
+          title="Sensación Térmica"
+          value={`${Math.round(weather.feelsLike)}°C`}
+        />
       </View>
     </View>
   );
@@ -178,23 +171,24 @@ const DetailsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: colors.primary,
   },
   topContainer: {
     borderBottomLeftRadius: 64,
     borderBottomRightRadius: 64,
     alignItems: 'center',
     position: 'relative',
+    paddingBottom: 32,
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#fff',
+    color: colors.white,
     textAlign: 'center',
   },
   currentTime: {
     fontSize: 18,
-    color: '#fff',
+    color: colors.white,
     textAlign: 'center',
   },
   subtitleContainer: {
@@ -205,7 +199,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 18,
-    color: '#fff',
+    color: colors.white,
   },
   temperatureContainer: {
     flexDirection: 'row',
@@ -214,12 +208,12 @@ const styles = StyleSheet.create({
   temperatureText: {
     fontSize: 96,
     fontWeight: 'bold',
-    color: '#fff',
+    color: colors.white,
   },
   symbol: {
     fontSize: 48,
     fontWeight: 'bold',
-    color: '#fff',
+    color: colors.white,
   },
   weatherIcon: {
     width: 150,
@@ -228,7 +222,7 @@ const styles = StyleSheet.create({
   },
   weatherDescription: {
     fontSize: 24,
-    color: '#fff',
+    color: colors.white,
     textAlign: 'center',
   },
   detailsContainer: {
@@ -241,14 +235,14 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     fontSize: 18,
-    color: '#555',
+    color: colors.darkGray,
   },
   detailValue: {
     fontSize: 18,
-    color: '#333',
+    color: colors.mediumGray,
   },
   error: {
-    color: 'red',
+    color: colors.errorRed,
     textAlign: 'center',
     marginTop: 20,
   },
@@ -267,7 +261,7 @@ const styles = StyleSheet.create({
   },
   separator: {
     width: 1,
-    backgroundColor: '#ccc',
+    backgroundColor: colors.separatorGray,
     marginHorizontal: 8,
   },
   icon: {
@@ -282,7 +276,7 @@ const styles = StyleSheet.create({
   },
   flexDescription: {
     fontSize: 14,
-    color: '#555',
+    color: colors.darkGray,
     marginTop: 4,
   },
 });

@@ -12,13 +12,17 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {RootStackParamList} from '../../navigation/types';
-import {useSearchHistoryStore} from '../../store/useSearchHistoryStore';
-import {SearchHistory} from '../../types/SearchHistory';
+import {RootStackParamList} from '../navigation/types';
+import {useSearchHistoryStore} from '../../domain/store/useSearchHistoryStore';
+import {SearchHistory} from '../../data/models/SearchHistory';
+import CountryFlag from 'react-native-country-flag';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
 const HomeScreen = () => {
+  const {top} = useSafeAreaInsets();
   const [city, setCity] = useState('');
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const {history, fetchHistory, clearHistory, removeFromHistory} =
@@ -55,15 +59,25 @@ const HomeScreen = () => {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[
+        styles.container,
+        {
+          paddingTop: top + 32,
+        },
+      ]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <Text style={styles.title}>Consulta el Clima</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Ingrese el nombre de la ciudad"
-        value={city}
-        onChangeText={handleCityChange}
-      />
+      <View>
+        <TextInput
+          style={styles.input}
+          placeholder="Ingrese el nombre de la ciudad"
+          value={city}
+          onChangeText={handleCityChange}
+        />
+        <View>
+          <Icon name="search" />
+        </View>
+      </View>
       <View style={styles.buttonContainer}>
         <Button title="Buscar" onPress={handleSearch} />
         <Button title="Limpiar Historial" onPress={handleClearHistory} />
@@ -76,8 +90,9 @@ const HomeScreen = () => {
             <TouchableOpacity onPress={() => handleHistoryPress(item)}>
               <View style={styles.historyItem}>
                 <Text>
-                  {item.city}, {item.state}, {item.country}
+                  {item.city},{item.state || 'N/A'}, {item.country}
                 </Text>
+                <CountryFlag isoCode={item.country} size={25} />
               </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleRemoveHistoryItem(item.id)}>
@@ -93,7 +108,7 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 32,
+    padding: 16,
   },
   scrollContainer: {
     flexGrow: 1,
@@ -129,6 +144,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: 'gray',
     borderRadius: 8,
+    marginBottom: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   removeButton: {
     color: 'red',

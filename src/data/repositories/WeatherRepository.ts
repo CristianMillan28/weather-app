@@ -1,6 +1,6 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {SearchHistory} from '../../types/SearchHistory';
+import {SearchHistory} from '../models/SearchHistory';
 
 const API_KEY = 'f5aa75166cb215562d20e8036891b40a';
 const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
