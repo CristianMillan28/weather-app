@@ -13,6 +13,10 @@ import {RootStackParamList} from '../navigation/types';
 import {weatherDescriptions} from '../utils/weatherDescriptions';
 import {getWeatherIcon} from '../utils/weatherIcons';
 import ErrorMessage from '../components/ErrorMessage';
+import {getMomentOfDay, MomentOfDay} from '../utils/momentOfDay';
+import {getBackgroundColor} from '../utils/backgroundColor';
+import CurrentTime from '../components/CurrentTime';
+import AnimatedWeatherIcon from '../components/AnimatedWeatherIcon';
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'Details'>;
 
@@ -25,7 +29,6 @@ const DetailsScreen = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const {addToHistory} = useSearchHistoryStore();
-  const [currentTime, setCurrentTime] = useState<string>('');
   const fadeAnim = useState(new Animated.Value(0))[0];
   const pulseAnim = useState(new Animated.Value(1))[0];
 
@@ -48,8 +51,8 @@ const DetailsScreen = () => {
         duration: 500,
         useNativeDriver: true,
       }).start();
-    } catch (error: any) {
-      setError(error.message);
+    } catch (err: any) {
+      setError(err.message);
       setLoading(false);
     }
   };
@@ -58,22 +61,6 @@ const DetailsScreen = () => {
     handleGetWeatherDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [city, state, country]);
-
-  useEffect(() => {
-    if (weather) {
-      const interval = setInterval(() => {
-        const date = new Date((Date.now() / 1000 + weather.timezone) * 1000);
-        setCurrentTime(
-          date.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            timeZone: 'UTC',
-          }),
-        );
-      }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [weather]);
 
   useEffect(() => {
     Animated.loop(
@@ -102,19 +89,14 @@ const DetailsScreen = () => {
 
   if (!weather) {
     return (
-      <ErrorMessage showBackButton message="No se encontraron datos para las coordenadas proporcionadas" />
+      <ErrorMessage
+        showBackButton
+        message="No se encontraron datos para las coordenadas proporcionadas"
+      />
     );
   }
 
   const currentTimeInSeconds = Math.floor(Date.now() / 1000);
-
-  const getMomentOfDay = (current: number, sunrise: number, sunset: number) => {
-    if (current < sunrise) return 'Noche';
-    if (current < sunrise + 3600) return 'Amaneciendo';
-    if (current < sunset - 3600) return 'Día';
-    if (current < sunset) return 'Anocheciendo';
-    return 'Noche';
-  };
 
   const momentOfDay = getMomentOfDay(
     currentTimeInSeconds,
@@ -122,23 +104,9 @@ const DetailsScreen = () => {
     weather.sunset,
   );
 
-  const isNight = momentOfDay === 'Noche' || momentOfDay === 'Anocheciendo';
+  const isNight =
+    momentOfDay === MomentOfDay.Night || momentOfDay === MomentOfDay.Dusk;
   const iconUrl = getWeatherIcon(weather.description, isNight);
-
-  const getBackgroundColor = (moment: string) => {
-    switch (moment) {
-      case 'Noche':
-        return colors.backgroundNight;
-      case 'Amaneciendo':
-        return colors.backgroundDawn;
-      case 'Día':
-        return colors.backgroundDay;
-      case 'Anocheciendo':
-        return colors.backgroundDusk;
-      default:
-        return colors.backgroundDay;
-    }
-  };
 
   return (
     <Animated.View
@@ -165,18 +133,14 @@ const DetailsScreen = () => {
           </View>
         </View>
         <View>
-          <Animated.Image
-            source={iconUrl}
-            style={[styles.weatherIcon, {transform: [{scale: pulseAnim}]}]}
-          />
+          <AnimatedWeatherIcon iconUrl={iconUrl} pulseAnim={pulseAnim} />
           <Text style={styles.weatherDescription}>
             {weatherDescriptions[weather.description]}
           </Text>
         </View>
         <View />
         <View>
-          {/* <Text style={styles.weatherDescription}>{weather.description}</Text> */}
-          <Text style={styles.currentTime}>{currentTime}</Text>
+          <CurrentTime weather={weather} />
         </View>
       </View>
       <View style={styles.flexContainer}>
