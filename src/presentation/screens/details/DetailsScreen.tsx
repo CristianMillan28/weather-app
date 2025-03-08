@@ -3,6 +3,7 @@ import {Animated, StyleSheet, Text, View} from 'react-native';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import CountryFlag from 'react-native-country-flag';
+import LinearGradient from 'react-native-linear-gradient';
 
 import {colors} from '../../../constants/colors';
 import {Weather} from '../../../data/models/Weather';
@@ -15,9 +16,9 @@ import {weatherDescriptions} from '../../utils/weatherDescriptions';
 import {getWeatherIcon} from '../../utils/weatherIcons';
 import ErrorMessage from '../../components/ErrorMessage';
 import {getMomentOfDay, MomentOfDay} from '../../utils/momentOfDay';
-import {getBackgroundColor} from '../../utils/backgroundColor';
 import CurrentTime from './components/CurrentTime';
 import AnimatedWeatherIcon from './components/AnimatedWeatherIcon';
+import {getBackgroundGradient} from '../../utils/backgroundColor';
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'Details'>;
 
@@ -62,7 +63,6 @@ const DetailsScreen = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [city, state, country]);
 
-
   if (loading) {
     return <LoadingIndicator />;
   }
@@ -93,74 +93,73 @@ const DetailsScreen = () => {
   const iconUrl = getWeatherIcon(weather.description, isNight);
 
   return (
-    <Animated.View
-      style={[styles.container, {opacity: fadeAnim, paddingBottom: bottom + 16}]}>
-      <View
-        style={[
-          styles.topContainer,
-          {
-            paddingTop: top + 32,
-            backgroundColor: getBackgroundColor(momentOfDay),
-          },
-        ]}>
-        <View>
-          <Text style={styles.title}>{city}</Text>
-          <View style={styles.subtitleContainer}>
-            {state ? <Text style={styles.subtitle}>{state}</Text> : null}
-            <CountryFlag isoCode={country} size={16} />
+    <LinearGradient
+      colors={getBackgroundGradient(momentOfDay)}
+      style={[styles.container]}>
+      <Animated.View style={[styles.container, {opacity: fadeAnim}]}>
+        <View
+          style={{
+            marginTop: top + 16,
+            flex: 1,
+            justifyContent: 'space-between',
+            paddingBottom: 32,
+          }}>
+          <View>
+            <Text style={styles.title}>{city}</Text>
+            <View style={styles.subtitleContainer}>
+              {state ? <Text style={styles.subtitle}>{state}</Text> : null}
+              <CountryFlag isoCode={country} size={16} />
+            </View>
+            <View style={styles.temperatureContainer}>
+              <Text style={styles.temperatureText}>
+                {Math.round(weather.temperature)}
+              </Text>
+              <Text style={styles.symbol}>°</Text>
+            </View>
           </View>
-          <View style={styles.temperatureContainer}>
-            <Text style={styles.temperatureText}>
-              {Math.round(weather.temperature)}
+          <View style={{alignItems: 'center'}}>
+            <AnimatedWeatherIcon iconUrl={iconUrl} />
+            <Text style={styles.weatherDescription}>
+              {weatherDescriptions[weather.description]}
             </Text>
-            <Text style={styles.symbol}>°</Text>
+          </View>
+          <View />
+          <View>
+            <CurrentTime weather={weather} />
           </View>
         </View>
-        <View>
-          <AnimatedWeatherIcon iconUrl={iconUrl} />
-          <Text style={styles.weatherDescription}>
-            {weatherDescriptions[weather.description]}
-          </Text>
+        <View style={[styles.flexContainer, {
+          paddingBottom: bottom + 16,
+        }]}>
+          <WeatherDetailBox
+            iconName="water-percent"
+            title="Humedad"
+            value={`${weather.humidity}%`}
+          />
+          <WeatherDetailBox
+            iconName="weather-windy"
+            title="Viento"
+            value={`${weather.windSpeed} m/s`}
+          />
+          <WeatherDetailBox
+            iconName="thermometer"
+            title="Sensación Térmica"
+            value={`${Math.round(weather.feelsLike)}°C`}
+          />
         </View>
-        <View />
-        <View>
-          <CurrentTime weather={weather} />
-        </View>
-      </View>
-      <View style={styles.flexContainer}>
-        <WeatherDetailBox
-          iconName="water-percent"
-          title="Humedad"
-          value={`${weather.humidity}%`}
-        />
-        <WeatherDetailBox
-          iconName="weather-windy"
-          title="Viento"
-          value={`${weather.windSpeed} m/s`}
-        />
-        <WeatherDetailBox
-          iconName="thermometer"
-          title="Sensación Térmica"
-          value={`${Math.round(weather.feelsLike)}°C`}
-        />
-      </View>
-    </Animated.View>
+      </Animated.View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.primary,
   },
   topContainer: {
-    borderBottomLeftRadius: 64,
-    borderBottomRightRadius: 64,
     alignItems: 'center',
     position: 'relative',
-    paddingBottom: 32,
     flex: 1,
-    justifyContent: 'space-between',
   },
   title: {
     fontSize: 32,
@@ -202,8 +201,12 @@ const styles = StyleSheet.create({
   flexContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginTop: 16,
     paddingHorizontal: 16,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingTop: 16,
+    gap: 16,
   },
 });
 

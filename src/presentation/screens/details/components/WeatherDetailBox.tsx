@@ -22,10 +22,10 @@ const WeatherDetailBox: React.FC<WeatherDetailBoxProps> = ({iconName, title, val
 const styles = StyleSheet.create({
   flexBox: {
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: colors.white,
     borderRadius: 16,
     padding: 16,
-    width: '30%',
+    flex: 1,
   },
   flexTitle: {
     fontSize: 16,

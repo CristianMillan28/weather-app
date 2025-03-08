@@ -1,17 +1,17 @@
-import {MomentOfDay} from './momentOfDay';
-import {colors} from '../../constants/colors';
+import {gradients} from '../../constants/gradients';
+import { MomentOfDay } from './momentOfDay';
 
-export const getBackgroundColor = (moment: MomentOfDay): string => {
+export const getBackgroundGradient = (moment: MomentOfDay): string[] => {
   switch (moment) {
     case MomentOfDay.Night:
-      return colors.backgroundNight;
+      return gradients.night;
     case MomentOfDay.Dawn:
-      return colors.backgroundDawn;
+      return gradients.dawn;
     case MomentOfDay.Day:
-      return colors.backgroundDay;
+      return gradients.day;
     case MomentOfDay.Dusk:
-      return colors.backgroundDusk;
+      return gradients.dusk;
     default:
-      return colors.backgroundDay;
+      return gradients.day;
   }
 };
