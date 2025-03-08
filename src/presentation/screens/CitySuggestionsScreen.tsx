@@ -1,4 +1,9 @@
-import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {
+  RouteProp,
+  useNavigation,
+  useRoute,
+  useFocusEffect,
+} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useEffect, useState} from 'react';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
@@ -9,6 +14,7 @@ import {GetCitySuggestionsUseCase} from '../../domain/usecases/GetCitySuggestion
 import LoadingIndicator from '../components/LoadingIndicator';
 import ListItem from '../components/ListItem';
 import {RootStackParamList} from '../navigation/types';
+import ErrorMessage from '../components/ErrorMessage';
 
 type CitySuggestionsScreenRouteProp = RouteProp<
   RootStackParamList,
@@ -29,20 +35,46 @@ const CitySuggestionsScreen = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchSuggestions = async () => {
-      try {
-        const suggestions = await GetCitySuggestionsUseCase(query);
-        setSuggestions(suggestions);
-        setLoading(false);
-      } catch (error: any) {
-        setError(error.message);
-        setLoading(false);
-      }
-    };
+  useFocusEffect(
+    React.useCallback(() => {
+      navigation.setOptions({
+        headerTintColor: colors.darkGray,
+      });
+    }, [navigation]),
+  );
 
+  const fetchSuggestions = async () => {
+    try {
+      setLoading(true);
+      const suggestions = await GetCitySuggestionsUseCase(query);
+      setSuggestions(suggestions);
+      setLoading(false);
+
+      if (suggestions.length === 1) {
+        navigation.navigate('Details', suggestions[0]);
+      }
+    } catch (error: any) {
+      setError(error.message);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchSuggestions();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
+
+  useEffect(() => {
+    if (!loading) {
+      navigation.setOptions({
+        headerTintColor: colors.darkGray,
+      });
+    } else {
+      navigation.setOptions({
+        headerTintColor: colors.white,
+      });
+    }
+  }, [loading, navigation]);
 
   const handleSuggestionPress = (suggestion: SearchHistory) => {
     const searchHistory = {
@@ -56,34 +88,16 @@ const CitySuggestionsScreen = () => {
   };
 
   if (loading) {
-    return (
-      <View
-        style={[
-          styles.container,
-          {
-            paddingTop: top + 32,
-          },
-        ]}>
-        <LoadingIndicator />
-      </View>
-    );
+    return <LoadingIndicator />;
   }
 
   if (error) {
-    return <Text style={styles.error}>{error}</Text>;
+    return <ErrorMessage showBackButton message={error} />;
   }
 
   if (suggestions.length === 0) {
     return (
-      <View
-        style={[
-          styles.container,
-          {
-            paddingTop: top + 32,
-          },
-        ]}>
-        <Text style={styles.title}>No se encontraron sugerencias</Text>
-      </View>
+      <ErrorMessage showBackButton message="No se encontraron sugerencias" />
     );
   }
 
@@ -98,12 +112,10 @@ const CitySuggestionsScreen = () => {
       <Text style={styles.title}>Seleccione una ciudad</Text>
       <FlatList
         data={suggestions}
+        showsVerticalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({item}) => (
-          <ListItem
-            item={item}
-            onPress={() => handleSuggestionPress(item)}
-          />
+          <ListItem item={item} onPress={() => handleSuggestionPress(item)} />
         )}
         ItemSeparatorComponent={() => <View style={{height: 8}} />}
       />

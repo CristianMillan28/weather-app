@@ -22,12 +22,15 @@ export const useSearchHistoryStore = create<SearchHistoryState>(set => ({
   },
   addToHistory: async (historyItem: SearchHistory) => {
     const searchHistory = await getSearchHistory();
-    const cityExists = searchHistory.some(item => item.id === historyItem.id);
-    if (!cityExists) {
-      searchHistory.push(historyItem);
-      await saveSearchHistory(searchHistory);
-      set({history: searchHistory});
+    const itemIndex = searchHistory.findIndex(item => item.id === historyItem.id);
+    if (itemIndex !== -1) {
+      const [existingItem] = searchHistory.splice(itemIndex, 1);
+      searchHistory.unshift(existingItem);
+    } else {
+      searchHistory.unshift(historyItem);
     }
+    await saveSearchHistory(searchHistory);
+    set({history: searchHistory});
   },
   removeFromHistory: async (id: number) => {
     const searchHistory = await getSearchHistory();

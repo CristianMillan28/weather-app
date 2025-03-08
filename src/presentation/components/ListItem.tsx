@@ -22,14 +22,13 @@ const ListItem: React.FC<ListItemProps> = ({
     <TouchableOpacity activeOpacity={0.5} onPress={onPress}>
       <View style={styles.suggestionItem}>
         <View style={styles.cityInfo}>
-          <View style={styles.cityNameContainer}>
-            <Text style={styles.cityName}>{item.city}</Text>
-            <CountryFlag isoCode={item.country} size={16} />
-          </View>
+          <Text style={styles.cityName}>
+            {item.city} <CountryFlag isoCode={item.country} size={16} />
+          </Text>
           {item.state ? <Text style={styles.state}>{item.state}</Text> : null}
         </View>
         {showRemoveButton && (
-          <TouchableOpacity onPress={onRemove}>
+          <TouchableOpacity activeOpacity={0.5} onPress={onRemove}>
             <Icon name="delete" size={24} color={colors.gray} />
           </TouchableOpacity>
         )}
@@ -56,11 +55,6 @@ const styles = StyleSheet.create({
   },
   cityInfo: {
     flex: 1,
-  },
-  cityNameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
   },
   cityName: {
     fontSize: 24,

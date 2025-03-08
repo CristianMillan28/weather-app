@@ -1,22 +1,23 @@
-import { RouteProp, useRoute } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
-import { Animated, Image, StyleSheet, Text, View } from 'react-native';
+import {RouteProp, useRoute} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {Animated, StyleSheet, Text, View} from 'react-native';
 import CountryFlag from 'react-native-country-flag';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '../../constants/colors';
-import { Weather } from '../../data/models/Weather';
-import { useSearchHistoryStore } from '../../domain/store/useSearchHistoryStore';
-import { GetWeatherDetailsUseCase } from '../../domain/usecases/GetWeatherDetailsUseCase';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {colors} from '../../constants/colors';
+import {Weather} from '../../data/models/Weather';
+import {useSearchHistoryStore} from '../../domain/store/useSearchHistoryStore';
+import {GetWeatherDetailsUseCase} from '../../domain/usecases/GetWeatherDetailsUseCase';
 import LoadingIndicator from '../components/LoadingIndicator';
 import WeatherDetailBox from '../components/WeatherDetailBox';
-import { RootStackParamList } from '../navigation/types';
-import { weatherDescriptions } from '../utils/weatherDescriptions';
-import { getWeatherIcon } from '../utils/weatherIcons';
+import {RootStackParamList} from '../navigation/types';
+import {weatherDescriptions} from '../utils/weatherDescriptions';
+import {getWeatherIcon} from '../utils/weatherIcons';
+import ErrorMessage from '../components/ErrorMessage';
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'Details'>;
 
 const DetailsScreen = () => {
-  const {top} = useSafeAreaInsets();
+  const {top, bottom} = useSafeAreaInsets();
 
   const route = useRoute<DetailsScreenRouteProp>();
   const {city, state, country} = route.params;
@@ -26,6 +27,7 @@ const DetailsScreen = () => {
   const {addToHistory} = useSearchHistoryStore();
   const [currentTime, setCurrentTime] = useState<string>('');
   const fadeAnim = useState(new Animated.Value(0))[0];
+  const pulseAnim = useState(new Animated.Value(1))[0];
 
   const handleGetWeatherDetails = async () => {
     const parsedState = state ? state.replaceAll(',', '') : '';
@@ -73,29 +75,34 @@ const DetailsScreen = () => {
     }
   }, [weather]);
 
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1.05,
+          duration: 750,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 750,
+          useNativeDriver: true,
+        }),
+      ]),
+    ).start();
+  }, [pulseAnim]);
+
   if (loading) {
-    return (
-      <View
-        style={[
-          styles.container,
-          {
-            backgroundColor: colors.primary,
-          },
-        ]}>
-        <LoadingIndicator />
-      </View>
-    );
+    return <LoadingIndicator />;
   }
 
   if (error) {
-    return <Text style={styles.error}>{error}</Text>;
+    return <ErrorMessage showBackButton message={error} />;
   }
 
   if (!weather) {
     return (
-      <Text style={styles.error}>
-        No se encontraron datos para las coordenadas proporcionadas
-      </Text>
+      <ErrorMessage showBackButton message="No se encontraron datos para las coordenadas proporcionadas" />
     );
   }
 
@@ -134,7 +141,8 @@ const DetailsScreen = () => {
   };
 
   return (
-    <Animated.View style={[styles.container, {opacity: fadeAnim}]}>
+    <Animated.View
+      style={[styles.container, {opacity: fadeAnim, paddingBottom: bottom}]}>
       <View
         style={[
           styles.topContainer,
@@ -143,23 +151,33 @@ const DetailsScreen = () => {
             backgroundColor: getBackgroundColor(momentOfDay),
           },
         ]}>
-        <Text style={styles.title}>{weather.city}</Text>
-        <View style={styles.subtitleContainer}>
-          {state ? <Text style={styles.subtitle}>{state}</Text> : null}
-          <CountryFlag isoCode={weather.country} size={16} />
+        <View>
+          <Text style={styles.title}>{city}</Text>
+          <View style={styles.subtitleContainer}>
+            {state ? <Text style={styles.subtitle}>{state}</Text> : null}
+            <CountryFlag isoCode={country} size={16} />
+          </View>
+          <View style={styles.temperatureContainer}>
+            <Text style={styles.temperatureText}>
+              {Math.round(weather.temperature)}
+            </Text>
+            <Text style={styles.symbol}>°</Text>
+          </View>
         </View>
-        <View style={styles.temperatureContainer}>
-          <Text style={styles.temperatureText}>
-            {Math.round(weather.temperature)}
+        <View>
+          <Animated.Image
+            source={iconUrl}
+            style={[styles.weatherIcon, {transform: [{scale: pulseAnim}]}]}
+          />
+          <Text style={styles.weatherDescription}>
+            {weatherDescriptions[weather.description]}
           </Text>
-          <Text style={styles.symbol}>°</Text>
         </View>
-        <Image source={iconUrl} style={styles.weatherIcon} />
-        <Text style={styles.weatherDescription}>
-          {weatherDescriptions[weather.description]}
-        </Text>
-        {/* <Text style={styles.weatherDescription}>{weather.description}</Text> */}
-        <Text style={styles.currentTime}>{currentTime}</Text>
+        <View />
+        <View>
+          {/* <Text style={styles.weatherDescription}>{weather.description}</Text> */}
+          <Text style={styles.currentTime}>{currentTime}</Text>
+        </View>
       </View>
       <View style={styles.flexContainer}>
         <WeatherDetailBox
@@ -193,12 +211,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
     paddingBottom: 32,
+    flex: 1,
+    justifyContent: 'space-between',
   },
   title: {
     fontSize: 32,
     fontWeight: 'bold',
     color: colors.white,
     textAlign: 'center',
+    marginBottom: 8,
   },
   currentTime: {
     fontSize: 18,
@@ -217,10 +238,10 @@ const styles = StyleSheet.create({
   },
   temperatureContainer: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    justifyContent: 'center',
   },
   temperatureText: {
-    fontSize: 96,
+    fontSize: 120,
     fontWeight: 'bold',
     color: colors.white,
   },
@@ -230,8 +251,8 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
   weatherIcon: {
-    width: 150,
-    height: 150,
+    width: 200,
+    height: 200,
     objectFit: 'contain',
   },
   weatherDescription: {

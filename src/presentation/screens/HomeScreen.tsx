@@ -1,26 +1,14 @@
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useEffect, useState} from 'react';
-import {
-  FlatList,
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  Image,
-} from 'react-native';
+import {KeyboardAvoidingView, Platform, StyleSheet, Text} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/Ionicons';
 import {colors} from '../../constants/colors';
-import {SearchHistory} from '../../data/models/SearchHistory';
 import {useSearchHistoryStore} from '../../domain/store/useSearchHistoryStore';
-import ListItem from '../components/ListItem';
-import {RootStackParamList} from '../navigation/types';
-import {weatherIcons} from '../utils/weatherIcons';
 import EmptyHistory from '../components/EmptyHistory';
+import HistoryList from '../components/HistoryList';
+import SearchInput from '../components/SearchInput';
+import {RootStackParamList} from '../navigation/types';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 
@@ -28,8 +16,7 @@ const HomeScreen = () => {
   const {top} = useSafeAreaInsets();
   const [city, setCity] = useState('');
   const navigation = useNavigation<HomeScreenNavigationProp>();
-  const {history, fetchHistory, clearHistory, removeFromHistory} =
-    useSearchHistoryStore();
+  const {history, fetchHistory} = useSearchHistoryStore();
 
   useEffect(() => {
     fetchHistory();
@@ -48,20 +35,8 @@ const HomeScreen = () => {
     }
   };
 
-  const handleHistoryPress = (historyItem: SearchHistory) => {
-    navigation.navigate('Details', historyItem);
-  };
-
   const handleCityChange = (text: string) => {
     setCity(text);
-  };
-
-  const handleRemoveHistoryItem = async (id: number) => {
-    await removeFromHistory(id);
-  };
-
-  const handleClearHistory = async () => {
-    await clearHistory();
   };
 
   return (
@@ -73,57 +48,14 @@ const HomeScreen = () => {
         },
       ]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <Text style={styles.title}>Consulta el Clima</Text>
-      <View style={styles.searchContainer}>
-        <View style={styles.searchInputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Ingrese el nombre de la ciudad"
-            value={city}
-            onChangeText={handleCityChange}
-            onSubmitEditing={handleSearch}
-            placeholderTextColor={colors.gray}
-          />
-          {city.length > 0 && (
-            <TouchableOpacity onPress={clearInput} style={styles.clearButton}>
-              <Icon name="close-circle" size={24} color={colors.darkGray} />
-            </TouchableOpacity>
-          )}
-          <TouchableOpacity
-            activeOpacity={0.5}
-            onPress={handleSearch}
-            style={styles.searchButton}>
-            <Icon name="search" size={24} color={colors.white} />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {history.length > 0 ? (
-        <>
-          <TouchableOpacity
-            activeOpacity={0.5}
-            onPress={handleClearHistory}
-            style={styles.clearHistoryContainer}>
-            <Icon name="trash" size={20} color={colors.darkGray} />
-            <Text style={styles.clearHistoryText}>Limpiar Historial</Text>
-          </TouchableOpacity>
-          <FlatList
-            data={history}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item}) => (
-              <ListItem
-                item={item}
-                onPress={() => handleHistoryPress(item)}
-                showRemoveButton={true}
-                onRemove={() => handleRemoveHistoryItem(item.id)}
-              />
-            )}
-            ItemSeparatorComponent={() => <View style={{height: 8}} />}
-          />
-        </>
-      ) : (
-        <EmptyHistory />
-      )}
+      <Text style={styles.title}>Weather App</Text>
+      <SearchInput
+        city={city}
+        onCityChange={handleCityChange}
+        onClearInput={clearInput}
+        onSearch={handleSearch}
+      />
+      {history.length > 0 ? <HistoryList /> : <EmptyHistory />}
     </KeyboardAvoidingView>
   );
 };
@@ -134,30 +66,11 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   title: {
-    fontSize: 24,
-    marginBottom: 16,
+    fontSize: 32,
+    marginBottom: 24,
     textAlign: 'center',
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  searchInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderColor: colors.separatorGray,
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderRadius: 100,
-    flex: 1,
-    marginRight: 8, // Espacio entre el input y el botón de buscar
-  },
-  input: {
-    flex: 1,
-    height: 40,
-    paddingHorizontal: 16,
-    color: colors.darkGray,
+    fontWeight: 'bold',
+    color: colors.primary,
   },
   clearButton: {
     marginRight: 8,
