@@ -1,14 +1,15 @@
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Platform, StyleSheet, Text } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '../../../constants/colors';
-import { useSearchHistoryStore } from '../../../domain/store/useSearchHistoryStore';
+import React, {useEffect, useState} from 'react';
+import {KeyboardAvoidingView, Platform, StyleSheet, Text} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+
+import {colors} from '../../../constants/colors';
+import {useSearchHistoryStore} from '../../../domain/store/useSearchHistoryStore';
 import EmptyHistory from './components/EmptyHistory';
 import HistoryList from './components/HistoryList';
 import SearchInput from './components/SearchInput';
-import { RootStackParamList } from '../../navigation/types';
+import {RootStackParamList} from '../../navigation/types';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
 

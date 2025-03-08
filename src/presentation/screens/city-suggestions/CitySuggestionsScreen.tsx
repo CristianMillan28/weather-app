@@ -1,3 +1,5 @@
+import React, {useCallback, useEffect, useState} from 'react';
+import {FlatList, StyleSheet, Text, View} from 'react-native';
 import {
   RouteProp,
   useNavigation,
@@ -5,9 +7,8 @@ import {
   useFocusEffect,
 } from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import React, {useCallback, useEffect, useState} from 'react';
-import {FlatList, StyleSheet, Text, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+
 import {colors} from '../../../constants/colors';
 import {SearchHistory} from '../../../data/models/SearchHistory';
 import {GetCitySuggestionsUseCase} from '../../../domain/usecases/GetCitySuggestionsUseCase';

@@ -1,8 +1,9 @@
-import {RouteProp, useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {Animated, StyleSheet, Text, View} from 'react-native';
-import CountryFlag from 'react-native-country-flag';
+import {RouteProp, useRoute} from '@react-navigation/native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import CountryFlag from 'react-native-country-flag';
+
 import {colors} from '../../../constants/colors';
 import {Weather} from '../../../data/models/Weather';
 import {useSearchHistoryStore} from '../../../domain/store/useSearchHistoryStore';
